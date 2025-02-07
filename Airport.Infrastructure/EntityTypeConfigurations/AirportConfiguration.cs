@@ -1,17 +1,27 @@
-﻿using Airport.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Airport.Infrastructure.EntityTypeConfigurations;
 
-public class AirportConfiguration : IEntityTypeConfiguration<Domain.Entities.Airport>
+using Airport = Domain.Entities.Airport;
+
+public class AirportConfiguration : IEntityTypeConfiguration<Airport>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Airport> modelBuilder)
+    public void Configure(EntityTypeBuilder<Airport> modelBuilder)
     {
         modelBuilder.HasKey(a => a.Id);
 
         modelBuilder
+            .HasIndex(a => a.Iata)
+            .IsUnique();
+        
+        modelBuilder
+            .HasIndex(a => a.Icao)
+            .IsUnique();
+            
+        modelBuilder
             .Property(a => a.Iata)
+            .IsRequired()
             .HasMaxLength(3);
 
         modelBuilder
@@ -27,6 +37,11 @@ public class AirportConfiguration : IEntityTypeConfiguration<Domain.Entities.Air
             .HasOne(a => a.City)
             .WithMany(c => c.Airports)
             .HasForeignKey(a => a.CityId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder
+            .HasOne(a => a.Location)
+            .WithOne(c => c.Airport)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

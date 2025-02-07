@@ -10,6 +10,10 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
     {
         modelBuilder
             .HasKey(l => l.Id);
+        
+        modelBuilder
+            .HasIndex(a => new { a.Lat, a.Lon })
+            .IsUnique();
 
         modelBuilder
             .Property(l => l.Lon)

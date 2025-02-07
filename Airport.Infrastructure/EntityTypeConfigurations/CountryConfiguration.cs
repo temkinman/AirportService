@@ -9,6 +9,14 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
     public void Configure(EntityTypeBuilder<Country> modelBuilder)
     {
         modelBuilder.HasKey(c => c.Id);
+        
+        modelBuilder
+            .HasIndex(a => a.Iata)
+            .IsUnique();
+        
+        modelBuilder
+            .HasIndex(a => a.Name)
+            .IsUnique();
 
         modelBuilder
             .Property(c => c.Name)
@@ -17,6 +25,7 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
 
         modelBuilder
             .Property(c => c.Iata)
+            .IsRequired()
             .HasMaxLength(3);
     }
 }

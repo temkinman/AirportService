@@ -9,6 +9,10 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
     public void Configure(EntityTypeBuilder<City> modelBuilder)
     {
         modelBuilder.HasKey(c => c.Id);
+        
+        modelBuilder
+            .HasIndex(a => a.Iata)
+            .IsUnique();
 
         modelBuilder
             .Property(c => c.Name)
@@ -17,6 +21,7 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
 
         modelBuilder
             .Property(c => c.Iata)
+            .IsRequired()
             .HasMaxLength(3);
 
         modelBuilder
