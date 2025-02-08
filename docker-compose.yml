@@ -1,0 +1,25 @@
+services:
+  airport.api:
+    image: ${DOCKER_REGISTRY-}airportservice
+    build:
+      context: .
+      dockerfile: ./Airport.Api/Dockerfile
+    ports:
+      - "9091:8080"
+    container_name: airport_service_web_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - airportDb
+  airportDb:
+    image: postgres:latest
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    container_name: db_airport_container
+volumes:
+  db_data:
