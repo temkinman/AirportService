@@ -45,7 +45,6 @@ public class CountryRepository : ICountryRepository
     public async Task<Country?> GetByCountryNameAsync(string countryName, CancellationToken cancellationToken)
     {
         return await _airportDbContext.Countries
-            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Name.ToLower() == countryName.ToLower(), cancellationToken);
     }
 }

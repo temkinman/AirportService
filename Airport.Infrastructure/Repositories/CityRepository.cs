@@ -42,7 +42,6 @@ public class CityRepository : ICityRepository
     public async Task<City?> GetByCityNameAsync(string cityName, CancellationToken cancellationToken)
     {
         return await _airportDbContext.Cities
-            .AsNoTracking()
             .Include(c => c.Country)
             .FirstOrDefaultAsync(c => c.Name.ToLower() == cityName.ToLower(), cancellationToken);
     }

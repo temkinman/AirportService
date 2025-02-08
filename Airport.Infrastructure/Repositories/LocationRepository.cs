@@ -43,7 +43,6 @@ public class LocationRepository : ILocationRepository
     {
         double diff = 0.0000001f;
         return await _airportDbContext.Locations
-            .AsNoTracking()
             .FirstOrDefaultAsync(l => Math.Abs(l.Lon - lon) < diff && Math.Abs(l.Lat - lat) < diff, cancellationToken); 
     }
 }

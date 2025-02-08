@@ -46,7 +46,6 @@ public class AirportRepository : IAirportRepository
     public async Task<Airport?> GetAirportDataByIataAsync(string iata, CancellationToken cancellationToken)
     {
         return await _airportDbContext.Airports
-            .AsNoTracking()
             .Include(a => a.City)
             .Include(a => a.Country)
             .Include(a => a.Location)

@@ -1,5 +1,8 @@
-﻿using Airport.Application.Interfaces;
+﻿using System.Text.Json;
+using Airport.Application.Airports.Queries.GetAirportInfoByIata;
+using Airport.Application.Interfaces;
 using Airport.Domain.Entities;
+using AutoMapper;
 
 namespace Airport.Application.Helpers;
 
@@ -22,14 +25,12 @@ public class AirportHelper
             return airport;
         }
 
-        var country = await countryRepository.GetByCountryNameAsync(airport.Country.Name, cancellationToken);
-        
         var newCity = new City
         {
             Id = Guid.NewGuid(),
             Name = airport.City.Name,
             Iata = airport.City.Iata,
-            CountryId = country.Id,
+            CountryId = airport.Country.Id
         };
         
         airport.CityId = newCity.Id;
@@ -44,8 +45,7 @@ public class AirportHelper
         var country = await countyRepository.GetByCountryNameAsync(airport.Country.Name, cancellationToken);
         if (country != null)
         {
-            airport.City.CountryId = country.Id;
-            
+            airport.Country = country;
             return airport;
         }
         
@@ -93,6 +93,44 @@ public class AirportHelper
         
         airport.Location = newLocation;
         
+        return airport;
+    }
+
+    public static async Task<(GetAirportInfoByIataResult? airportDataResult, Airport? airport)> GetAirportDataFromApiAsync(
+        HttpClient httpClient, string iata, IMapper mapper, JsonSerializerOptions jsonOptions, CancellationToken cancellationToken)
+    {
+        GetAirportInfoByIataResult? airportDataResult;
+        Airport? airport;
+        using (var request = new HttpRequestMessage(HttpMethod.Get, $"{httpClient.BaseAddress}/airports/{iata}"))
+        {
+            HttpResponseMessage response = await httpClient.SendAsync(request, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+                
+                airportDataResult = JsonSerializer.Deserialize<GetAirportInfoByIataResult>(jsonResponse, jsonOptions);
+                
+                airport = mapper.Map<Airport>(airportDataResult);
+            }
+            else
+            {
+                var errorMessage = $"Error: {response.StatusCode} - {response.ReasonPhrase}";
+                throw new HttpRequestException(errorMessage);
+            }
+        }
+        
+        return (airportDataResult, airport);
+    }
+    
+    public static async Task<Airport> SetAirportEntitiesAsync(Airport airport,
+        ICountryRepository countryRepository, ICityRepository cityRepository, ILocationRepository locationRepository,
+        CancellationToken cancellationToken)
+    {
+        airport = await AirportHelper.SetCountryToAirportAsync(countryRepository, airport, cancellationToken);
+        airport = await AirportHelper.SetCityToAirportAsync(cityRepository, countryRepository, airport, cancellationToken);
+        airport = await AirportHelper.SetLocationToAirportAsync(locationRepository, airport, cancellationToken);
+    
         return airport;
     }
 }
