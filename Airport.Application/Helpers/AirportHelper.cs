@@ -133,4 +133,9 @@ public class AirportHelper
     
         return airport;
     }
+    
+    public static bool BeUpperCase(string value)
+    {
+        return value == null || value == value.ToUpper();
+    }
 }

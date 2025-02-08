@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Airport.Application.Dtos;
+using Airport.Application.Helpers;
 using FluentValidation;
 using MediatR;
 
@@ -37,5 +38,6 @@ public class GetAirportInfoByIataValidator : AbstractValidator<GetAirportInfoByI
     {
         RuleFor(x => x.Iata).NotNull().NotEmpty().WithMessage("Iata is required");
         RuleFor(x => x.Iata).MaximumLength(3).WithMessage("Iata must be maximum 3 symbols");
+        RuleFor(x => x.Iata).Must(AirportHelper.BeUpperCase).WithMessage("The string must be in uppercase.");
     }
 }
