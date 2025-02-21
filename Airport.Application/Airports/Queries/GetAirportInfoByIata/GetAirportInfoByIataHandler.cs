@@ -39,7 +39,7 @@ public class GetAirportInfoByIataHandler : IRequestHandler<GetAirportInfoByIataQ
         
         if (airportExisting != null)
         {
-            _logger.LogInformation("******** Getting airport data from database ************");
+            _logger.LogInformation("******** Getting airport data from database *********");
             var res = _mapper.Map<GetAirportInfoByIataResult>(airportExisting);
             return res;
         }
@@ -49,7 +49,7 @@ public class GetAirportInfoByIataHandler : IRequestHandler<GetAirportInfoByIataQ
 
         if (airport != null)
         {
-            _logger.LogInformation("********* Creating new airport *****************");
+            _logger.LogInformation("********* Creating new airport **********");
             airport = await AirportHelper.SetAirportEntitiesAsync(airport,
                 _countryRepository, _cityRepository, _locationRepository, cancellationToken);
             

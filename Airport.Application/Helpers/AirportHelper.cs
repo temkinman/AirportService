@@ -127,9 +127,9 @@ public class AirportHelper
         ICountryRepository countryRepository, ICityRepository cityRepository, ILocationRepository locationRepository,
         CancellationToken cancellationToken)
     {
-        airport = await AirportHelper.SetCountryToAirportAsync(countryRepository, airport, cancellationToken);
-        airport = await AirportHelper.SetCityToAirportAsync(cityRepository, countryRepository, airport, cancellationToken);
-        airport = await AirportHelper.SetLocationToAirportAsync(locationRepository, airport, cancellationToken);
+        airport = await SetCountryToAirportAsync(countryRepository, airport, cancellationToken);
+        airport = await SetCityToAirportAsync(cityRepository, countryRepository, airport, cancellationToken);
+        airport = await SetLocationToAirportAsync(locationRepository, airport, cancellationToken);
     
         return airport;
     }

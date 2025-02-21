@@ -61,7 +61,7 @@ public class CustomExceptionMiddleware
                 _logger.LogError(exception, "InvalidOperationException was occured");
                 break;
             default:
-                _logger.LogError(exception, "An unexpected error occurred");
+                _logger.LogError(exception, "Unexpected error occurred");
                 break;
         }
         context.Response.ContentType = "application/json";
